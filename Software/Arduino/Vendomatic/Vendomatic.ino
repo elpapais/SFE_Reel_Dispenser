@@ -2,14 +2,21 @@
 #include <LiquidCrystal.h>
 #include <Keypad.h>
 
+//define how many stepper increments are in one inch.
+#define STEPS_PER_INCH 505
+//set password
+#define PASSWORD 6175
+
+#define TRUE 1
+#define FALSE 0
+
 // Define Global variables and definitions for program use
 #define LOWBYTE 2
 #define HIGHBYTE 3
 //used to store and manipulate the inventory status.
 unsigned int inventory; 
 
-//define how many stepper increments are in one inch.
-#define STEPS_PER_INCH 510
+
 
 /* 
  * LCD RS pin to digital pin 11

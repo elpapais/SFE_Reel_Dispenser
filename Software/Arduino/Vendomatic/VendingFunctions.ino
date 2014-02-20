@@ -2,6 +2,8 @@
 
 void vend(int vendLength){
   //vend material
+  lcd.clear();
+  lcd.print("Vending...");
     digitalWrite(9, LOW); //ENABLE STEPPER.
     delay(10);
     for(int a = 0; a < vendLength; a++)

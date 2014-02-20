@@ -33,9 +33,6 @@ void vendorInit(void){
   lcd.begin(16, 2);
   // Show splash screen
   lcd.print("Vendomatic");
-  delay(100);
-  lcd.setCursor(0, 1);
-  lcd.print("Booting...");
   
   pinMode(12, OUTPUT);  //Stepper - STEP
   pinMode(13, OUTPUT);  //Stepper - DIR 
@@ -50,20 +47,16 @@ void vendorInit(void){
   pinMode(A5, INPUT);
   //laod current inventory into volotale memory.
   inventory = getInventory();
-  delay(500);
+  delay(100);
 }
-
-
-
-
-
-
 
 void commandInput(){
   //Display prompt to enter requested length in feet.
   lcd.clear();
-  lcd.print("Enter Length(ft) - ");
+  lcd.print("Enter(ft)");
+  lcd.setCursor(0,1);
   lcd.print(inventory); 
+  lcd.print(" - Remain");
   
   //create a varialbe to store key input
   char key = 0;
@@ -75,11 +68,11 @@ void commandInput(){
       if(key != NO_KEY) break;
       delay(10);
     }
-    lcd.scrollDisplayLeft();
+    //Not needed anymore lcd.scrollDisplayLeft(); 
   }
   //when a key is pressed reset the display 
   lcd.clear();
-  lcd.print("Enter Length(ft)");
+  lcd.print("Enter(ft)");
  
   //create an array to store key presses  
   char data[10] = {0,0,0,0,0,0,0,0,0,0};
@@ -93,7 +86,8 @@ void commandInput(){
      //if the index is still 0 (meaning no keys have been 
      //pressed) jump to the menu selection.
      if(i <= 0){
-       selectionMenu();
+       char test = enter_password();
+       if(test == TRUE) selectionMenu();
        break;
      }
      //if there are any keys other than '*' in the data[] 
@@ -139,6 +133,25 @@ void commandInput(){
         break;  
       }
       
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Are you sure?");
+      lcd.setCursor(0,1);
+      lcd.print("* to bail");
+      delay(500);
+      int z;
+      char input;
+        for(z = 0; z < 1000; z++){
+        //Check the keypad for a key entry
+         input = keypad.getKey();
+        //When a key is pressed exit the loop.
+        if(input != NO_KEY) break;
+        delay(10);
+        }
+      if(z >= 1000) break; //Timedout
+      if(input != '#') break; // Only accept enter key.
+      
+      
       //if all checks out vend material
       Serial.println(vendValue);
       vend(vendValue);
@@ -176,7 +189,7 @@ void commandInput(){
       } 
     } 
     //check for timeout or error
-      if(n >= 200){
+      if(n >= 1000){
         //a timeout was reached
         lcd.clear();
         lcd.print("TIMEOUT!");
